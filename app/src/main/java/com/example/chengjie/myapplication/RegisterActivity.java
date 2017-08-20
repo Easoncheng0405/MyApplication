@@ -43,11 +43,12 @@ public class RegisterActivity extends Activity {
     private EditText etPhone;
     private EditText etPassWord;
     private EditText etConfirm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //去掉Activity上面的状态栏
-        getWindow().setFlags(WindowManager.LayoutParams. FLAG_FULLSCREEN , WindowManager.LayoutParams. FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_register);
         init();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -63,16 +64,16 @@ public class RegisterActivity extends Activity {
             @Override
             public void onClick(View view) {
                 button.setProgress(0);
-                String name= etName.getText().toString().trim();
-                final String phone=etPhone.getText().toString();
-                final String passWord=etPassWord.getText().toString();
-                final String confirm=etConfirm.getText().toString();
-                int res=checkInput(name,phone,passWord,confirm);
-                if(res!=0)
-                    setButtonProgress(button,res);
+                String name = etName.getText().toString().trim();
+                final String phone = etPhone.getText().toString();
+                final String passWord = etPassWord.getText().toString();
+                final String confirm = etConfirm.getText().toString();
+                int res = checkInput(name, phone, passWord, confirm);
+                if (res != 0)
+                    setButtonProgress(button, res);
                 else {
                     try {
-                        name=URLEncoder.encode(name,"UTF-8");
+                        name = URLEncoder.encode(name, "UTF-8");
                         register(phone, name, passWord);
 
                     } catch (UnsupportedEncodingException e) {
@@ -83,48 +84,48 @@ public class RegisterActivity extends Activity {
         });
     }
 
-    private void init(){
-        fab=(FloatingActionButton)findViewById(R.id.fab);
-        cvAdd=(CardView)findViewById(R.id.cv_add);
-        button=(CircularProgressButton)findViewById(R.id.bt_go);
-        etName=(EditText)findViewById(R.id.et_username);
-        etPhone=(EditText)findViewById(R.id.et_phone);
-        etPassWord=(EditText)findViewById(R.id.et_password);
-        etConfirm=(EditText)findViewById(R.id.et_repeatpassword);
+    private void init() {
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        cvAdd = (CardView) findViewById(R.id.cv_add);
+        button = (CircularProgressButton) findViewById(R.id.bt_go);
+        etName = (EditText) findViewById(R.id.et_username);
+        etPhone = (EditText) findViewById(R.id.et_phone);
+        etPassWord = (EditText) findViewById(R.id.et_password);
+        etConfirm = (EditText) findViewById(R.id.et_repeatpassword);
     }
 
-    private void register(final String phone,final String name,final String passWord){
-        int res=0;
+    private void register(final String phone, final String name, final String passWord) {
+        int res = 0;
         new Thread(new Runnable() {
             @Override
             public void run() {
                 String url = "http://49.140.61.67:8080/Server/CheckUserAlreadyExist";
-                String content = "phone="+phone+"&name="+name;
+                String content = "phone=" + phone + "&name=" + name;
                 String result = HttpRequest.request(url, content);
                 Gson gson = new Gson();
                 UserInfoJSON infoJSON = gson.fromJson(result, UserInfoJSON.class);
-                final int code=infoJSON.getCode();
+                final int code = infoJSON.getCode();
                 if (code == 0) {
-                    url="http://49.140.61.67:8080/Server/Register";
-                    Date date=new Date();
-                    DateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String time=format.format(date);
-                    content="info.name="+name+"&info.phone="+phone+"&info.password="+passWord+"&info.type="+0+"&info.signTime="+time;
-                    result=HttpRequest.request(url,content);
-                    infoJSON=gson.fromJson(result,UserInfoJSON.class);
-                    final int i=infoJSON.getCode();
-                    if(i==0)
+                    url = "http://49.140.61.67:8080/Server/Register";
+                    Date date = new Date();
+                    DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String time = format.format(date);
+                    content = "info.name=" + name + "&info.phone=" + phone + "&info.password=" + passWord + "&info.type=" + 0 + "&info.signTime=" + time;
+                    result = HttpRequest.request(url, content);
+                    infoJSON = gson.fromJson(result, UserInfoJSON.class);
+                    final int i = infoJSON.getCode();
+                    if (i == 0)
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                setButtonProgress(button,0);
+                                setButtonProgress(button, 0);
                             }
                         });
-                } else{
+                } else {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            setButtonProgress(button,code);
+                            setButtonProgress(button, code);
                         }
                     });
                 }
@@ -132,8 +133,8 @@ public class RegisterActivity extends Activity {
         }).start();
     }
 
-    private void setButtonProgress(final CircularProgressButton button,int code){
-        if(code==0){
+    private void setButtonProgress(final CircularProgressButton button, int code) {
+        if (code == 0) {
             ValueAnimator widthAnimation = ValueAnimator.ofInt(1, 100);
             widthAnimation.setDuration(1500);
             widthAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -145,8 +146,8 @@ public class RegisterActivity extends Activity {
                 }
             });
             widthAnimation.start();
-            Toast.makeText(RegisterActivity.this,"注册成功，即将跳转",Toast.LENGTH_SHORT).show();
-        }else{
+            Toast.makeText(RegisterActivity.this, "注册成功，即将跳转", Toast.LENGTH_SHORT).show();
+        } else {
             ValueAnimator widthAnimation = ValueAnimator.ofInt(1, 99);
             widthAnimation.setDuration(1500);
             widthAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -161,25 +162,22 @@ public class RegisterActivity extends Activity {
                 }
             });
             widthAnimation.start();
-            if(code==101)
-                Toast.makeText(RegisterActivity.this,"注册失败，用户名已存在",Toast.LENGTH_LONG).show();
-            else if(code ==102)
-                Toast.makeText(RegisterActivity.this,"注册失败，电话号已注册",Toast.LENGTH_LONG).show();
-            else if(code ==1)
-                Toast.makeText(RegisterActivity.this,"输入不能为空",Toast.LENGTH_LONG).show();
-            else if(code ==2)
-                Toast.makeText(RegisterActivity.this,"您输入的密码不一致",Toast.LENGTH_LONG).show();
-            else if(code ==3)
-                Toast.makeText(RegisterActivity.this,"          您输入的用户名不合法\n(中英文字符组成，最少两个字符)",Toast.LENGTH_LONG).show();
-            else if(code ==4)
-                Toast.makeText(RegisterActivity.this,"您输入的电话号号码不合法",Toast.LENGTH_LONG).show();
+            if (code == 101)
+                Toast.makeText(RegisterActivity.this, "注册失败，用户名已存在", Toast.LENGTH_LONG).show();
+            else if (code == 102)
+                Toast.makeText(RegisterActivity.this, "注册失败，电话号已注册", Toast.LENGTH_LONG).show();
+            else if (code == 1)
+                Toast.makeText(RegisterActivity.this, "输入不能为空", Toast.LENGTH_LONG).show();
+            else if (code == 2)
+                Toast.makeText(RegisterActivity.this, "您输入的密码不一致", Toast.LENGTH_LONG).show();
+            else if (code == 3)
+                Toast.makeText(RegisterActivity.this, "          您输入的用户名不合法\n(中英文字符组成，最少两个字符)", Toast.LENGTH_LONG).show();
+            else if (code == 4)
+                Toast.makeText(RegisterActivity.this, "您输入的电话号号码不合法", Toast.LENGTH_LONG).show();
 
         }
 
     }
-
-
-
 
 
     private void ShowEnterAnimation() {
@@ -218,7 +216,7 @@ public class RegisterActivity extends Activity {
     }
 
     public void animateRevealShow() {
-        Animator mAnimator = ViewAnimationUtils.createCircularReveal(cvAdd, cvAdd.getWidth()/2,0, fab.getWidth() / 2, cvAdd.getHeight());
+        Animator mAnimator = ViewAnimationUtils.createCircularReveal(cvAdd, cvAdd.getWidth() / 2, 0, fab.getWidth() / 2, cvAdd.getHeight());
         mAnimator.setDuration(500);
         mAnimator.setInterpolator(new AccelerateInterpolator());
         mAnimator.addListener(new AnimatorListenerAdapter() {
@@ -237,7 +235,7 @@ public class RegisterActivity extends Activity {
     }
 
     public void animateRevealClose() {
-        Animator mAnimator = ViewAnimationUtils.createCircularReveal(cvAdd,cvAdd.getWidth()/2,0, cvAdd.getHeight(), fab.getWidth() / 2);
+        Animator mAnimator = ViewAnimationUtils.createCircularReveal(cvAdd, cvAdd.getWidth() / 2, 0, cvAdd.getHeight(), fab.getWidth() / 2);
         mAnimator.setDuration(500);
         mAnimator.setInterpolator(new AccelerateInterpolator());
         mAnimator.addListener(new AnimatorListenerAdapter() {
@@ -256,23 +254,25 @@ public class RegisterActivity extends Activity {
         });
         mAnimator.start();
     }
+
     @Override
     public void onBackPressed() {
         animateRevealClose();
     }
 
-    private int checkInput(String name,String phone,String password,String confirm){
-        if(name.equals("")||phone.equals("")||password.equals("")||confirm.equals(""))
+    private int checkInput(String name, String phone, String password, String confirm) {
+        if (name.equals("") || phone.equals("") || password.equals("") || confirm.equals(""))
             return 1;
-        if(!password.equals(confirm))
+        if (!password.equals(confirm))
             return 2;
-        if(!isLegalName(name))
+        if (!isLegalName(name))
             return 3;
-        if(!isPhoneNum(phone))
+        if (!isPhoneNum(phone))
             return 4;
         return 0;
     }
-    private boolean isLegalName(String name){
+
+    private boolean isLegalName(String name) {
         Pattern p = Pattern
                 .compile("^[\\u4e00-\\u9fa5a-zA-Z][\\u4e00-\\u9fa5a-zA-Z]+$");
         Matcher m = p.matcher(name);
@@ -280,6 +280,7 @@ public class RegisterActivity extends Activity {
         return m.matches();
 
     }
+
     private boolean isPhoneNum(String phoneNum) {
         Pattern p = Pattern.compile("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$");
         Matcher m = p.matcher(phoneNum);
