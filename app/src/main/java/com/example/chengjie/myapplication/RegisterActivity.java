@@ -30,6 +30,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import base.UserInfoJSON;
+import util.ErrorCode;
 import util.HttpRequest;
 
 
@@ -68,16 +69,17 @@ public class RegisterActivity extends Activity {
                 final String phone = etPhone.getText().toString();
                 final String passWord = etPassWord.getText().toString();
                 final String confirm = etConfirm.getText().toString();
-                int res = checkInput(name, phone, passWord, confirm);
-                if (res != 0)
-                    setButtonProgress(button, res);
-                else {
-                    try {
-                        name = URLEncoder.encode(name, "UTF-8");
-                        register(phone, name, passWord);
+                if (checkInput(name, phone, passWord, confirm)) {
+                    if (HttpRequest.isNetworkAvailable(RegisterActivity.this)) {
+                        try {
+                            name = URLEncoder.encode(name, "UTF-8");
+                            register(phone, name, passWord);
 
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Toast.makeText(RegisterActivity.this, "网络无连接，检查您的网络设置", Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -95,88 +97,93 @@ public class RegisterActivity extends Activity {
     }
 
     private void register(final String phone, final String name, final String passWord) {
-        int res = 0;
         new Thread(new Runnable() {
             @Override
             public void run() {
                 String url = "http://49.140.61.67:8080/Server/CheckUserAlreadyExist";
                 String content = "phone=" + phone + "&name=" + name;
-                String result = HttpRequest.request(url, content);
-                Gson gson = new Gson();
-                UserInfoJSON infoJSON = gson.fromJson(result, UserInfoJSON.class);
-                final int code = infoJSON.getCode();
-                if (code == 0) {
-                    url = "http://49.140.61.67:8080/Server/Register";
-                    Date date = new Date();
-                    DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String time = format.format(date);
-                    content = "info.name=" + name + "&info.phone=" + phone + "&info.password=" + passWord + "&info.type=" + 0 + "&info.signTime=" + time;
-                    result = HttpRequest.request(url, content);
-                    infoJSON = gson.fromJson(result, UserInfoJSON.class);
-                    final int i = infoJSON.getCode();
-                    if (i == 0)
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                setButtonProgress(button, 0);
-                            }
-                        });
-                } else {
+                final String result = HttpRequest.request(url, content);
+                final int code;
+                if (result.equals("SocketTimeoutException")) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            setButtonProgress(button, code);
+                            ErrorCode.showErrorInfo(RegisterActivity.this, button, ErrorCode.REGISTER_TIMEOUT, "连接超时，检查您的网络设置");
                         }
                     });
-                }
-            }
-        }).start();
-    }
+                } else if (result.equals("ConnectException")) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ErrorCode.showErrorInfo(RegisterActivity.this, button, ErrorCode.REGISTER_SERVER_EXCEPTION, "无法连接到服务器，我们将尽快修复！");
+                        }
+                    });
+                } else {
+                    Gson gson = new Gson();
+                    UserInfoJSON infoJSON = gson.fromJson(result, UserInfoJSON.class);
+                    code = infoJSON.getCode();
+                    if (code == 0) {
+                        url = "http://49.140.61.67:8080/Server/Register";
+                        Date date = new Date();
+                        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        String time = format.format(date);
+                        content = "info.name=" + name + "&info.phone=" + phone + "&info.password=" + passWord + "&info.type=" + 0 + "&info.signTime=" + time;
+                        final String res = HttpRequest.request(url, content);
+                        final int i;
+                        if (res.equals("SocketTimeoutException"))
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ErrorCode.showErrorInfo(RegisterActivity.this, button, ErrorCode.REGISTER_TIMEOUT, "连接超时，检查您的网络设置");
+                                }
+                            });
+                        else if (res.equals("ConnectException"))
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ErrorCode.showErrorInfo(RegisterActivity.this, button, ErrorCode.REGISTER_SERVER_EXCEPTION, "无法连接到服务器，我们将尽快修复！");
+                                }
+                            });
+                        else {
+                            infoJSON = gson.fromJson(res, UserInfoJSON.class);
+                            i = infoJSON.getCode();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    switch (i) {
+                                        case 0:
+                                            ErrorCode.showErrorInfo(RegisterActivity.this, button, ErrorCode.REGISTER_SUCCESS, null);
+                                            break;
+                                        case 201:
+                                            ErrorCode.showErrorInfo(RegisterActivity.this, button, ErrorCode.REGISTER_SERVER_EXCEPTION, "服务器发生异常，我们将尽快修复 code=" + 201);
+                                            break;
+                                        case 202:
+                                            ErrorCode.showErrorInfo(RegisterActivity.this, button, ErrorCode.REGISTER_SERVER_EXCEPTION, "服务器发生异常，我们将尽快修复 code=" + 202);
+                                            break;
+                                    }
+                                }
+                            });
+                        }
 
-    private void setButtonProgress(final CircularProgressButton button, int code) {
-        if (code == 0) {
-            ValueAnimator widthAnimation = ValueAnimator.ofInt(1, 100);
-            widthAnimation.setDuration(1500);
-            widthAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
-            widthAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    Integer value = (Integer) animation.getAnimatedValue();
-                    button.setProgress(value);
-                }
-            });
-            widthAnimation.start();
-            Toast.makeText(RegisterActivity.this, "注册成功，即将跳转", Toast.LENGTH_SHORT).show();
-        } else {
-            ValueAnimator widthAnimation = ValueAnimator.ofInt(1, 99);
-            widthAnimation.setDuration(1500);
-            widthAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
-            widthAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    Integer value = (Integer) animation.getAnimatedValue();
-                    button.setProgress(value);
-                    if (value == 99) {
-                        button.setProgress(-1);
+                    } else if (code == 101) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ErrorCode.showErrorInfo(RegisterActivity.this, button, ErrorCode.REGISTER_USERNAME_EXIST, "用户名已存在");
+                            }
+                        });
+                    } else if (code == 102) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ErrorCode.showErrorInfo(RegisterActivity.this, button, ErrorCode.REGISTER_USERNAME_EXIST, "电话号已存在");
+                            }
+                        });
                     }
                 }
-            });
-            widthAnimation.start();
-            if (code == 101)
-                Toast.makeText(RegisterActivity.this, "注册失败，用户名已存在", Toast.LENGTH_LONG).show();
-            else if (code == 102)
-                Toast.makeText(RegisterActivity.this, "注册失败，电话号已注册", Toast.LENGTH_LONG).show();
-            else if (code == 1)
-                Toast.makeText(RegisterActivity.this, "输入不能为空", Toast.LENGTH_LONG).show();
-            else if (code == 2)
-                Toast.makeText(RegisterActivity.this, "您输入的密码不一致", Toast.LENGTH_LONG).show();
-            else if (code == 3)
-                Toast.makeText(RegisterActivity.this, "          您输入的用户名不合法\n(中英文字符组成，最少两个字符)", Toast.LENGTH_LONG).show();
-            else if (code == 4)
-                Toast.makeText(RegisterActivity.this, "您输入的电话号号码不合法", Toast.LENGTH_LONG).show();
 
-        }
-
+            }
+        }).start();
     }
 
 
@@ -260,16 +267,24 @@ public class RegisterActivity extends Activity {
         animateRevealClose();
     }
 
-    private int checkInput(String name, String phone, String password, String confirm) {
-        if (name.equals("") || phone.equals("") || password.equals("") || confirm.equals(""))
-            return 1;
-        if (!password.equals(confirm))
-            return 2;
-        if (!isLegalName(name))
-            return 3;
-        if (!isPhoneNum(phone))
-            return 4;
-        return 0;
+    private boolean checkInput(String name, String phone, String password, String confirm) {
+        if (name.equals("") || phone.equals("") || password.equals("") || confirm.equals("")) {
+            ErrorCode.showErrorInfo(RegisterActivity.this, button, ErrorCode.REGISTER_INPUT_NONE, "输入不能为空");
+            return false;
+        }
+        if (!password.equals(confirm)) {
+            ErrorCode.showErrorInfo(RegisterActivity.this, button, ErrorCode.REGISTER_INPUT_NONE, "您输入的密码不一致");
+            return false;
+        }
+        if (!isLegalName(name)) {
+            ErrorCode.showErrorInfo(RegisterActivity.this, button, ErrorCode.REGISTER_INPUT_NONE, "              您输入的用户名不合法\n(由中英字符开头且只能包含中英字符与数字)");
+            return false;
+        }
+        if (!isPhoneNum(phone)) {
+            ErrorCode.showErrorInfo(RegisterActivity.this, button, ErrorCode.REGISTER_INPUT_NONE, "您输入的电话号码不存在");
+            return false;
+        }
+        return true;
     }
 
     private boolean isLegalName(String name) {

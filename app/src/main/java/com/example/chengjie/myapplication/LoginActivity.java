@@ -1,17 +1,14 @@
 package com.example.chengjie.myapplication;
 
-import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.CardView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -26,9 +23,9 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import base.UserInfo;
 import base.UserInfoJSON;
 import util.HttpRequest;
+import util.ErrorCode;
 
 /**
  * Created by chengjie on 17-8-19.
@@ -53,16 +50,24 @@ public class LoginActivity extends Activity {
         btGo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                btGo.setProgress(0);
-                String info = etUsername.getText().toString().trim();
-                String password = etPassword.getText().toString();
-                if (!isPhoneNum(info))
-                    try {
-                        info = URLEncoder.encode(info, "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
+                if (HttpRequest.isNetworkAvailable(LoginActivity.this)) {
+                    btGo.setProgress(0);
+                    String info = etUsername.getText().toString().trim();
+                    String password = etPassword.getText().toString();
+                    if (info.equals("") || password.equals(""))
+                        ErrorCode.showErrorInfo(LoginActivity.this, btGo, ErrorCode.LOGIN_NETWORK_EXCEPTION, "输入不能为空");
+                    else {
+                        if (!isPhoneNum(info))
+                            try {
+                                info = URLEncoder.encode(info, "UTF-8");
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                        login(info, password);
                     }
-                login(info, password);
+                } else
+                    ErrorCode.showErrorInfo(LoginActivity.this, btGo, ErrorCode.LOGIN_NETWORK_EXCEPTION, "网络无连接，检查您的网络设置");
+
             }
         });
         fab.setOnClickListener(new View.OnClickListener() {
@@ -109,13 +114,51 @@ public class LoginActivity extends Activity {
                         + "&opInfo.opType=Login" + "&opInfo.note=" + note;
                 String res = HttpRequest.request(url, content);
                 System.out.println(res);
-                Gson gson = new Gson();
-                UserInfoJSON infoJSON = gson.fromJson(res, UserInfoJSON.class);
-                final int code = infoJSON.getCode();
+                final String code;
+                if (res.equals("SocketTimeoutException")) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ErrorCode.showErrorInfo(LoginActivity.this, btGo, ErrorCode.LOGIN_INPUT_NONE, "连接服务器超时，检查您的网络设置");
+                        }
+                    });
+
+                } else if (res.equals("ConnectException")) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ErrorCode.showErrorInfo(LoginActivity.this, btGo, ErrorCode.LOGIN_NETWORK_EXCEPTION, "无法连接到服务器，我们将尽快修复！");
+                        }
+                    });
+                } else {
+                    Gson gson = new Gson();
+                    final UserInfoJSON infoJSON = gson.fromJson(res, UserInfoJSON.class);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            switch (infoJSON.getCode()) {
+                                case 0:
+                                    ErrorCode.showErrorInfo(LoginActivity.this, btGo, ErrorCode.LOGIN_SUCCESS, null);
+                                    break;
+                                case 201:
+                                    ErrorCode.showErrorInfo(LoginActivity.this, btGo, ErrorCode.LOGIN_FAILED, "用户名或密码错误");
+                                    break;
+                                case 202:
+                                    ErrorCode.showErrorInfo(LoginActivity.this, btGo, ErrorCode.LOGIN_FAILED, "服务器发生异常，我们将尽快修复 code=" + 202);
+                                    break;
+                                case 203:
+                                    ErrorCode.showErrorInfo(LoginActivity.this, btGo, ErrorCode.LOGIN_FAILED, "服务器发生异常，我们将尽快修复 code=" + 203);
+                                    break;
+
+                            }
+                        }
+                    });
+
+                }
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        setButtonProgress(btGo,code);
+
                     }
                 });
             }
@@ -130,38 +173,5 @@ public class LoginActivity extends Activity {
 
     }
 
-    private void setButtonProgress(final CircularProgressButton button, int code) {
-        if (code == 0) {
-            ValueAnimator widthAnimation = ValueAnimator.ofInt(1, 100);
-            widthAnimation.setDuration(1500);
-            widthAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
-            widthAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    Integer value = (Integer) animation.getAnimatedValue();
-                    button.setProgress(value);
-                }
-            });
-            widthAnimation.start();
-            Toast.makeText(LoginActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
-        } else {
-            ValueAnimator widthAnimation = ValueAnimator.ofInt(1, 99);
-            widthAnimation.setDuration(1500);
-            widthAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
-            widthAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    Integer value = (Integer) animation.getAnimatedValue();
-                    button.setProgress(value);
-                    if (value == 99) {
-                        button.setProgress(-1);
-                    }
-                }
-            });
-            widthAnimation.start();
-            Toast.makeText(LoginActivity.this, "用户名或密码错误", Toast.LENGTH_LONG).show();
 
-        }
-
-    }
 }
