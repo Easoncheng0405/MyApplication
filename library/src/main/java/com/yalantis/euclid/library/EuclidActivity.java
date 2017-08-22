@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.RectF;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
@@ -95,7 +96,7 @@ public abstract class EuclidActivity extends Activity {
                 mInitialProfileButtonX = mButtonProfile.getX();
             }
         });
-        back=findViewById(R.id.toolbar_profile_back);
+        back = findViewById(R.id.toolbar_profile_back);
 
         sScreenWidth = getResources().getDisplayMetrics().widthPixels;
         sProfileImageHeight = getResources().getDimensionPixelSize(R.dimen.height_profile_image);
@@ -481,7 +482,10 @@ public abstract class EuclidActivity extends Activity {
         if (getState() == EuclidState.Opened) {
             animateCloseProfileDetails();
         } else if (getState() == EuclidState.Closed) {
-            super.onBackPressed();
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            startActivity(intent);
         }
     }
 
@@ -561,5 +565,6 @@ public abstract class EuclidActivity extends Activity {
     protected int getCircleRadiusDp() {
         return CIRCLE_RADIUS_DP;
     }
+
 
 }

@@ -1,6 +1,7 @@
 package util;
 
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 public class ErrorCode {
 
     public static ArrayList<String> extra=null;
-
+    public static Activity activity=null;
     private static ValueAnimator widthAnimation;
     public static final String LOGIN_SUCCESS = "LOGIN_SUCCESS";
     public static final String LOGIN_FAILED = "LOGIN_FAILED";
@@ -53,8 +54,10 @@ public class ErrorCode {
                         Integer value = (Integer) animation.getAnimatedValue();
                         if (value <= 100)
                             button.setProgress(value);
-                        if (value == 200)
+                        if (value == 200) {
                             context.startActivity(intent);
+                            activity.finish();
+                        }
                     }
                 });
                 widthAnimation.start();
@@ -96,8 +99,10 @@ public class ErrorCode {
                         Integer value = (Integer) animation.getAnimatedValue();
                         if (value <= 100)
                             button.setProgress(value);
-                        if (value == 200)
+                        if (value == 200) {
                             context.startActivity(i);
+                            activity.finish();
+                        }
                     }
                 });
                 widthAnimation.start();

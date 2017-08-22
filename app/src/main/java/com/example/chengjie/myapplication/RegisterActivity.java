@@ -3,6 +3,7 @@ package com.example.chengjie.myapplication;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -153,6 +154,11 @@ public class RegisterActivity extends Activity {
                                 final int n=teaInfoJSON.getCode();
                                 if(n==0){
                                     ErrorCode.extra=teaInfoJSON.getResArr();
+                                    ErrorCode.activity=RegisterActivity.this;
+                                    SharedPreferences.Editor editor=getSharedPreferences("userData",MODE_PRIVATE).edit();
+                                    editor.putString("userName",infoJSON.getUserInfo().getName());
+                                    editor.putString("phone",infoJSON.getUserInfo().getPhone());
+                                    editor.apply();
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {

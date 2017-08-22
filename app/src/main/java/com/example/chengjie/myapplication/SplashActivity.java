@@ -2,15 +2,23 @@ package com.example.chengjie.myapplication;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.google.gson.Gson;
+
+import base.TeaInfoJSON;
+import util.ErrorCode;
+import util.HttpRequest;
+
 public class SplashActivity extends Activity {
 
-    private static final int sleepTime = 2000;
+    private static final int sleepTime = 1000;
 
     @Override
     protected void onCreate(Bundle arg0) {
@@ -31,6 +39,25 @@ public class SplashActivity extends Activity {
             public void run() {
                 long start = System.currentTimeMillis();
                 long costTime = System.currentTimeMillis() - start;
+                SharedPreferences preferences=getSharedPreferences("userData",MODE_PRIVATE);
+                String name=preferences.getString("userName","");
+                String phone=preferences.getString("phone","");
+                Intent intent=null;
+                if(name.equals("")||phone.equals(""))
+                    intent = new Intent(SplashActivity.this, LoginActivity.class);
+
+                else {
+                    String url = "http://49.140.61.67:8080/Server/getUserName";
+                    String res = HttpRequest.request(url, "");
+                    Gson gson=new Gson();
+                    TeaInfoJSON teaInfoJSON = gson.fromJson(res, TeaInfoJSON.class);
+                    final int i=teaInfoJSON.getCode();
+                    if(i==0){
+                        intent = new Intent(SplashActivity.this, MainActivity.class);
+                        intent.putStringArrayListExtra("res",teaInfoJSON.getResArr());
+                    }else
+                        showErrorInfo(i);
+                }
                 //等待sleeptime时长
                 if (sleepTime - costTime > 0) {
                     try {
@@ -40,9 +67,28 @@ public class SplashActivity extends Activity {
                     }
                 }
                 //进入主页面
-                startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                if(intent!=null)
+                    startActivity(intent);
+                else
+                    System.exit(0);
                 finish();
             }
         }).start();
+    }
+
+    private void showErrorInfo(final int code) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                switch (code) {
+                    case 201:
+                        ErrorCode.showErrorInfo(SplashActivity.this, null, ErrorCode.REGISTER_SERVER_EXCEPTION, "服务器发生异常，我们将尽快修复 code=" + 201);
+                        break;
+                    case 202:
+                        ErrorCode.showErrorInfo(SplashActivity.this, null, ErrorCode.REGISTER_SERVER_EXCEPTION, "服务器发生异常，我们将尽快修复 code=" + 202);
+                        break;
+                }
+            }
+        });
     }
 }

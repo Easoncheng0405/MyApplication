@@ -1,5 +1,7 @@
 package com.example.chengjie.myapplication;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.BaseAdapter;
@@ -51,6 +53,8 @@ public class MainActivity extends EuclidActivity  {
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        if(position==3)
+                            clear();
                         close();
                         return true;
                     }
@@ -97,5 +101,13 @@ public class MainActivity extends EuclidActivity  {
 
     private void close(){
         drawer.closeDrawer();
+    }
+
+    private void clear(){
+        SharedPreferences.Editor editor=getSharedPreferences("userData",MODE_PRIVATE).edit();
+        editor.clear();
+        editor.apply();
+        startActivity(new Intent(MainActivity.this,LoginActivity.class));
+        finish();
     }
 }

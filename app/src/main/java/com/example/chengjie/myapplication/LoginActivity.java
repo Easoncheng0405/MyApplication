@@ -2,8 +2,8 @@ package com.example.chengjie.myapplication;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
-import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -143,6 +143,11 @@ public class LoginActivity extends Activity {
                         final int i=teaInfoJSON.getCode();
                         if(i==0){
                             ErrorCode.extra=teaInfoJSON.getResArr();
+                            ErrorCode.activity=LoginActivity.this;
+                            SharedPreferences.Editor editor=getSharedPreferences("userData",MODE_PRIVATE).edit();
+                            editor.putString("userName",infoJSON.getUserInfo().getName());
+                            editor.putString("phone",infoJSON.getUserInfo().getPhone());
+                            editor.apply();
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -185,6 +190,17 @@ public class LoginActivity extends Activity {
                 }
             }
         });
+    }
+    @Override
+    public void onBackPressed() {
+        //方式一：将此任务转向后台
+        moveTaskToBack(false);
+
+        //方式二：返回手机的主屏幕
+    /*Intent intent = new Intent(Intent.ACTION_MAIN);
+    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    intent.addCategory(Intent.CATEGORY_HOME);
+    startActivity(intent);*/
     }
 
 }
