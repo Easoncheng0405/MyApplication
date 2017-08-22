@@ -5,11 +5,17 @@
     android:id="@+id/wrapper">
 
     <FrameLayout
+
         android:id="@+id/toolbar_list"
         android:background="@color/orange"
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_toolbar">
-
+        <ImageView
+            android:id="@+id/toolbar_profile_back"
+            android:layout_width="@dimen/height_toolbar"
+            android:layout_height="match_parent"
+            android:padding="15dp"
+            android:src="@drawable/fluidicon" />
         <TextView
             android:text="@string/title_following"
             android:textColor="@color/black"
@@ -39,14 +45,7 @@
         android:clickable="true"
         android:visibility="invisible">
 
-        <ImageView
-            android:id="@+id/toolbar_profile_back"
-            android:layout_width="@dimen/height_toolbar"
-            android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center"
-            android:padding="15dp"
-            android:src="@drawable/ic_arrow_left" />
+
 
         <RelativeLayout
             android:layout_width="200dp"

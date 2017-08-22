@@ -112,7 +112,7 @@ public class LoginActivity extends Activity {
                 }
 
                 String content = "info=" + info + "&passWord=" + password + "&opInfo.opTime=" + time + "&opInfo.opLoc=" + opLoc + "&opInfo.opDev=" + android.os.Build.MODEL
-                        + "&opInfo.opType=Login" + "&opInfo.note=" + note;
+                        + "&opInfo.type=Login" + "&opInfo.note=" + note;
                 String res = HttpRequest.request(url, content);
                 System.out.println(res);
                 if (res==null||res.equals("SocketTimeoutException")) {

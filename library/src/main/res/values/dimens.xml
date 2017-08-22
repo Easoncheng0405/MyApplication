@@ -15,4 +15,5 @@
     <!-- *height_profile_picture_with_toolbar* - half of *size_button_message* -->
     <dimen name="margin_top_button_message">290dp</dimen>
 
+    <dimen name="tool_bar_text_size">22sp</dimen>
 </resources>

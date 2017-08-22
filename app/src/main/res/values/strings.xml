@@ -10,6 +10,9 @@
     <string name="repeat_password">确认密码</string>
     <string name="next">下一步</string>
     <string name="register">注册</string>
+    <string name="drawer_item_home">我的账户</string>
+    <string name="drawer_item_settings">设置</string>
+    <string name="logout">注销登录</string>
 
     <string-array name="array_names">
         <item>"Anastasia Druzhinina"</item>

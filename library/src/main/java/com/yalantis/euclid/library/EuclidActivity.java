@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nhaarman.listviewanimations.appearance.ViewAnimator;
 import com.nhaarman.listviewanimations.appearance.simple.SwingLeftInAnimationAdapter;
@@ -57,7 +58,7 @@ public abstract class EuclidActivity extends Activity {
     protected TextView mTextViewProfileName;
     protected TextView mTextViewProfileDescription;
     protected View mButtonProfile;
-
+    protected View back;
     public static ShapeDrawable sOverlayShape;
     static int sScreenWidth;
     static int sProfileImageHeight;
@@ -94,12 +95,7 @@ public abstract class EuclidActivity extends Activity {
                 mInitialProfileButtonX = mButtonProfile.getX();
             }
         });
-        findViewById(R.id.toolbar_profile_back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                animateCloseProfileDetails();
-            }
-        });
+        back=findViewById(R.id.toolbar_profile_back);
 
         sScreenWidth = getResources().getDisplayMetrics().widthPixels;
         sProfileImageHeight = getResources().getDimensionPixelSize(R.dimen.height_profile_image);
