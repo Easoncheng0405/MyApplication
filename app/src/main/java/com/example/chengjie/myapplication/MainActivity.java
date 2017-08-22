@@ -33,9 +33,12 @@ public class MainActivity extends EuclidActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences preferences = getSharedPreferences("userData", MODE_PRIVATE);
+        String name = preferences.getString("userName", "");
+        String phone = preferences.getString("phone", "");
         ProfileDrawerItem profile = new ProfileDrawerItem()
-                .withName("anastasia")
-                .withEmail("15843132084")
+                .withName(name)
+                .withEmail(phone)
                 .withIcon(R.drawable.fluidicon);
 
         PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.drawer_item_home).withIcon(R.drawable.ic_account_circle_black_48dp);

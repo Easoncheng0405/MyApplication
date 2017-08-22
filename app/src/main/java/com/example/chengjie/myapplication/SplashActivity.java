@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -35,43 +36,63 @@ public class SplashActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
+        final long start = System.currentTimeMillis();
         new Thread(new Runnable() {
             public void run() {
-                long start = System.currentTimeMillis();
-                long costTime = System.currentTimeMillis() - start;
-                SharedPreferences preferences=getSharedPreferences("userData",MODE_PRIVATE);
-                String name=preferences.getString("userName","");
-                String phone=preferences.getString("phone","");
-                Intent intent=null;
-                if(name.equals("")||phone.equals(""))
-                    intent = new Intent(SplashActivity.this, LoginActivity.class);
-
+                SharedPreferences preferences = getSharedPreferences("userData", MODE_PRIVATE);
+                String name = preferences.getString("userName", "");
+                String phone = preferences.getString("phone", "");
+                if (name.equals("") || phone.equals(""))
+                    startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                 else {
                     String url = "http://49.140.61.67:8080/Server/getUserName";
-                    String res = HttpRequest.request(url, "");
-                    Gson gson=new Gson();
-                    TeaInfoJSON teaInfoJSON = gson.fromJson(res, TeaInfoJSON.class);
-                    final int i=teaInfoJSON.getCode();
-                    if(i==0){
-                        intent = new Intent(SplashActivity.this, MainActivity.class);
-                        intent.putStringArrayListExtra("res",teaInfoJSON.getResArr());
-                    }else
-                        showErrorInfo(i);
-                }
-                //等待sleeptime时长
-                if (sleepTime - costTime > 0) {
-                    try {
-                        Thread.sleep(sleepTime - costTime);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                    final String res = HttpRequest.request(url, "");
+                    System.out.println(res);
+                    if (res.equals("SocketTimeoutException")) {
+                        startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                        finish();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(SplashActivity.this, "网络连接超时，检查您的网络设置", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } else if (res.equals("FileNotFoundException") || res.equals("ConnectException")) {
+                        startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                        finish();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(SplashActivity.this, "服务器发生异常，我们将尽快修复" + res, Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } else {
+                        Gson gson = new Gson();
+                        TeaInfoJSON teaInfoJSON = gson.fromJson(res, TeaInfoJSON.class);
+                        final int i = teaInfoJSON.getCode();
+                        if (i == 0) {
+                            Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                            intent.putStringArrayListExtra("res", teaInfoJSON.getResArr());
+                            long costTime = System.currentTimeMillis() - start;
+                            if (sleepTime - costTime > 0) {
+                                try {
+                                    Thread.sleep(sleepTime - costTime);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            //进入主页面
+                            if (intent != null)
+                                startActivity(intent);
+                            else
+                                System.exit(0);
+                            finish();
+                        } else {
+                            showErrorInfo(i);
+                            startActivity(new Intent(SplashActivity.this,LoginActivity.class));
+                        }
                     }
                 }
-                //进入主页面
-                if(intent!=null)
-                    startActivity(intent);
-                else
-                    System.exit(0);
-                finish();
             }
         }).start();
     }
