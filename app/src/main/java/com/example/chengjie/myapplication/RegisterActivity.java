@@ -2,7 +2,6 @@ package com.example.chengjie.myapplication;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,7 +12,6 @@ import android.transition.TransitionInflater;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.WindowManager;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -29,6 +27,7 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import base.TeaInfoJSON;
 import base.UserInfoJSON;
 import util.ErrorCode;
 import util.HttpRequest;
@@ -128,7 +127,7 @@ public class RegisterActivity extends Activity {
                         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         String time = format.format(date);
                         content = "info.name=" + name + "&info.phone=" + phone + "&info.password=" + passWord + "&info.type=" + 0 + "&info.signTime=" + time;
-                        final String res = HttpRequest.request(url, content);
+                        String res = HttpRequest.request(url, content);
                         final int i;
                         if (res.equals("SocketTimeoutException"))
                             runOnUiThread(new Runnable() {
@@ -147,22 +146,24 @@ public class RegisterActivity extends Activity {
                         else {
                             infoJSON = gson.fromJson(res, UserInfoJSON.class);
                             i = infoJSON.getCode();
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    switch (i) {
-                                        case 0:
-                                            ErrorCode.showErrorInfo(RegisterActivity.this, button, ErrorCode.REGISTER_SUCCESS, null);
-                                            break;
-                                        case 201:
-                                            ErrorCode.showErrorInfo(RegisterActivity.this, button, ErrorCode.REGISTER_SERVER_EXCEPTION, "服务器发生异常，我们将尽快修复 code=" + 201);
-                                            break;
-                                        case 202:
-                                            ErrorCode.showErrorInfo(RegisterActivity.this, button, ErrorCode.REGISTER_SERVER_EXCEPTION, "服务器发生异常，我们将尽快修复 code=" + 202);
-                                            break;
-                                    }
-                                }
-                            });
+                            if (i == 0) {
+                                url = "http://49.140.61.67:8080/Server/getUserName";
+                                res = HttpRequest.request(url, "");
+                                TeaInfoJSON teaInfoJSON = gson.fromJson(res, TeaInfoJSON.class);
+                                final int n=teaInfoJSON.getCode();
+                                if(n==0){
+                                    ErrorCode.extra=teaInfoJSON.getResArr();
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            ErrorCode.showErrorInfo(RegisterActivity.this,button,ErrorCode.LOGIN_SUCCESS,null);
+                                        }
+                                    });
+
+                                }else
+                                    showErrorInfo(n);
+                            } else
+                                showErrorInfo(i);
                         }
 
                     } else if (code == 101) {
@@ -301,6 +302,22 @@ public class RegisterActivity extends Activity {
         Matcher m = p.matcher(phoneNum);
         return m.matches();
 
+    }
+
+    private void showErrorInfo(final int code) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                switch (code) {
+                    case 201:
+                        ErrorCode.showErrorInfo(RegisterActivity.this, button, ErrorCode.REGISTER_SERVER_EXCEPTION, "服务器发生异常，我们将尽快修复 code=" + 201);
+                        break;
+                    case 202:
+                        ErrorCode.showErrorInfo(RegisterActivity.this, button, ErrorCode.REGISTER_SERVER_EXCEPTION, "服务器发生异常，我们将尽快修复 code=" + 202);
+                        break;
+                }
+            }
+        });
     }
 }
 

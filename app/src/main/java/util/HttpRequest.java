@@ -7,6 +7,7 @@ import android.net.NetworkInfo;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -56,7 +57,11 @@ public class HttpRequest {
         } catch (SocketTimeoutException e){
             e.printStackTrace();
             return "SocketTimeoutException";
-        } catch (ConnectException e){
+        }catch (FileNotFoundException e){
+            e.printStackTrace();
+            return "FileNotFoundException";
+        }
+        catch (ConnectException e){
             e.printStackTrace();
             return "ConnectException";
         } catch (IOException e) {

@@ -2,16 +2,23 @@ package util;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Toast;
 
 import com.dd.CircularProgressButton;
+import com.example.chengjie.myapplication.MainActivity;
+
+import java.util.ArrayList;
 
 /**
  * Created by chengjie on 17-8-20.
  */
 
 public class ErrorCode {
+
+    public static ArrayList<String> extra=null;
+
     private static ValueAnimator widthAnimation;
     public static final String LOGIN_SUCCESS = "LOGIN_SUCCESS";
     public static final String LOGIN_FAILED = "LOGIN_FAILED";
@@ -31,33 +38,41 @@ public class ErrorCode {
     public static final String REGISTER_ILLEGAL_NAME = "REGISTER_ILLEGAL_NAME";
     public static final String REGISTER_ILLEGAL_PHONE = "REGISTER_ILLEGAL_PHONE";
 
-    public static void showErrorInfo(Context context, final CircularProgressButton button, String code, final String info) {
+    public static void showErrorInfo(final Context context, final CircularProgressButton button, String code, final String info) {
 
         switch (code) {
             case LOGIN_SUCCESS:
-                widthAnimation = ValueAnimator.ofInt(1, 100);
-                widthAnimation.setDuration(1500);
+                final Intent intent=new Intent(context,MainActivity.class);
+                intent.putExtra("res",extra);
+                widthAnimation = ValueAnimator.ofInt(1, 200);
+                widthAnimation.setDuration(2000);
                 widthAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
                 widthAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
                         Integer value = (Integer) animation.getAnimatedValue();
-                        button.setProgress(value);
+                        if (value <= 100)
+                            button.setProgress(value);
+                        if (value == 200)
+                            context.startActivity(intent);
                     }
                 });
                 widthAnimation.start();
                 break;
             case LOGIN_FAILED:
-                widthAnimation = ValueAnimator.ofInt(1, 99);
-                widthAnimation.setDuration(1500);
+                widthAnimation = ValueAnimator.ofInt(1, 200);
+                widthAnimation.setDuration(2000);
                 widthAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
                 widthAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
                         Integer value = (Integer) animation.getAnimatedValue();
-                        button.setProgress(value);
-                        if (value == 99)
+                        if (value < 99)
+                            button.setProgress(value);
+                        if (value == 100)
                             button.setProgress(-1);
+                        if (value == 200)
+                            button.setProgress(0);
                     }
                 });
                 widthAnimation.start();
@@ -70,48 +85,58 @@ public class ErrorCode {
                 Toast.makeText(context, info, Toast.LENGTH_SHORT).show();
                 break;
             case REGISTER_SUCCESS:
-                widthAnimation = ValueAnimator.ofInt(1, 100);
-                widthAnimation.setDuration(1500);
+                final Intent i=new Intent(context,MainActivity.class);
+                i.putExtra("res",extra);
+                widthAnimation = ValueAnimator.ofInt(1, 200);
+                widthAnimation.setDuration(2000);
                 widthAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
                 widthAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
                         Integer value = (Integer) animation.getAnimatedValue();
-                        button.setProgress(value);
+                        if (value <= 100)
+                            button.setProgress(value);
+                        if (value == 200)
+                            context.startActivity(i);
                     }
                 });
                 widthAnimation.start();
                 break;
             case REGISTER_USERNAME_EXIST:
-                widthAnimation = ValueAnimator.ofInt(1, 99);
-                widthAnimation.setDuration(1500);
+                widthAnimation = ValueAnimator.ofInt(1, 200);
+                widthAnimation.setDuration(2000);
                 widthAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
                 widthAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
                         Integer value = (Integer) animation.getAnimatedValue();
-                        button.setProgress(value);
-                        if (value == 99)
+                        if (value < 99)
+                            button.setProgress(value);
+                        if (value == 100)
                             button.setProgress(-1);
+                        if (value == 200)
+                            button.setProgress(0);
                     }
                 });
                 widthAnimation.start();
                 Toast.makeText(context, info, Toast.LENGTH_LONG).show();
                 break;
             case REGISTER_PHONE_EXIST:
-                widthAnimation = ValueAnimator.ofInt(1, 99);
-                widthAnimation.setDuration(1500);
+                widthAnimation = ValueAnimator.ofInt(1, 200);
+                widthAnimation.setDuration(2000);
                 widthAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
                 widthAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
                         Integer value = (Integer) animation.getAnimatedValue();
-                        button.setProgress(value);
-                        if (value == 99)
+                        if (value < 99)
+                            button.setProgress(value);
+                        if (value == 100)
                             button.setProgress(-1);
+                        if (value == 200)
+                            button.setProgress(0);
                     }
                 });
-                widthAnimation.start();
                 Toast.makeText(context, info, Toast.LENGTH_LONG).show();
                 break;
             case REGISTER_TIMEOUT:

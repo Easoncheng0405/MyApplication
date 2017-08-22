@@ -2,6 +2,7 @@ package com.example.chengjie.myapplication;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,7 +11,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.dd.CircularProgressButton;
 import com.google.gson.Gson;
@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import base.TeaInfoJSON;
 import base.UserInfoJSON;
 import util.HttpRequest;
 import util.ErrorCode;
@@ -114,8 +115,7 @@ public class LoginActivity extends Activity {
                         + "&opInfo.opType=Login" + "&opInfo.note=" + note;
                 String res = HttpRequest.request(url, content);
                 System.out.println(res);
-                final String code;
-                if (res.equals("SocketTimeoutException")) {
+                if (res==null||res.equals("SocketTimeoutException")) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -123,7 +123,7 @@ public class LoginActivity extends Activity {
                         }
                     });
 
-                } else if (res.equals("ConnectException")) {
+                } else if (res.equals("ConnectException") || res.equals("FileNotFoundException")) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -132,35 +132,29 @@ public class LoginActivity extends Activity {
                     });
                 } else {
                     Gson gson = new Gson();
-                    final UserInfoJSON infoJSON = gson.fromJson(res, UserInfoJSON.class);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            switch (infoJSON.getCode()) {
-                                case 0:
-                                    ErrorCode.showErrorInfo(LoginActivity.this, btGo, ErrorCode.LOGIN_SUCCESS, null);
-                                    break;
-                                case 201:
-                                    ErrorCode.showErrorInfo(LoginActivity.this, btGo, ErrorCode.LOGIN_FAILED, "用户名或密码错误");
-                                    break;
-                                case 202:
-                                    ErrorCode.showErrorInfo(LoginActivity.this, btGo, ErrorCode.LOGIN_FAILED, "服务器发生异常，我们将尽快修复 code=" + 202);
-                                    break;
-                                case 203:
-                                    ErrorCode.showErrorInfo(LoginActivity.this, btGo, ErrorCode.LOGIN_FAILED, "服务器发生异常，我们将尽快修复 code=" + 203);
-                                    break;
+                    UserInfoJSON infoJSON = gson.fromJson(res, UserInfoJSON.class);
+                    final int code = infoJSON.getCode();
+                    if (code != 0)
+                        showErrorInfo(code);
+                    else {
+                        url = "http://49.140.61.67:8080/Server/getUserName";
+                        res = HttpRequest.request(url, "");
+                        TeaInfoJSON teaInfoJSON = gson.fromJson(res, TeaInfoJSON.class);
+                        final int i=teaInfoJSON.getCode();
+                        if(i==0){
+                            ErrorCode.extra=teaInfoJSON.getResArr();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ErrorCode.showErrorInfo(LoginActivity.this,btGo,ErrorCode.LOGIN_SUCCESS,null);
+                                }
+                            });
 
-                            }
-                        }
-                    });
+                        }else
+                            showErrorInfo(i);
+                    }
 
                 }
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                    }
-                });
             }
         }).start();
 
@@ -173,5 +167,24 @@ public class LoginActivity extends Activity {
 
     }
 
+    private void showErrorInfo(final int code) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                switch (code) {
+                    case 201:
+                        ErrorCode.showErrorInfo(LoginActivity.this, btGo, ErrorCode.LOGIN_FAILED, "用户名或密码错误");
+                        break;
+                    case 202:
+                        ErrorCode.showErrorInfo(LoginActivity.this, btGo, ErrorCode.LOGIN_FAILED, "服务器发生异常，我们将尽快修复 code=" + 202);
+                        break;
+                    case 203:
+                        ErrorCode.showErrorInfo(LoginActivity.this, btGo, ErrorCode.LOGIN_FAILED, "服务器发生异常，我们将尽快修复 code=" + 203);
+                        break;
+
+                }
+            }
+        });
+    }
 
 }

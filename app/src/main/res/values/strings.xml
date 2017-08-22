@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MaterialLogin</string>
+    <string name="app_name">大创小分队</string>
     <string name="login_success">login success</string>
     <string name="login">登录</string>
     <string name="Username">用户名</string>
@@ -10,4 +10,18 @@
     <string name="repeat_password">确认密码</string>
     <string name="next">下一步</string>
     <string name="register">注册</string>
+
+    <string-array name="array_names">
+        <item>"Anastasia Druzhinina"</item>
+        <item>"Andriy Hristyan"</item>
+        <item>"Dmitriy Dovbnya"</item>
+        <item>"Dmitry Denisenko"</item>
+        <item>"Eduard Baev"</item>
+        <item>"Iliya Bershadskiy"</item>
+        <item>"Kirill Penzykov"</item>
+        <item>"Konstantin Rudenko"</item>
+        <item>"Oleksii Shliama"</item>
+        <item>"Pavel Apisov"</item>
+        <item>"Vadim Ooleynik"</item>
+    </string-array>
 </resources>
