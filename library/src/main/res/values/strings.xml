@@ -6,7 +6,9 @@
         eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
         nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </string>
 
-    <string name="title_following">Following</string>
+    <string name="title_following">编辑选荐</string>
     <string name="toolbar_bio">Bio</string>
     <string name="toolbar_details">Details</string>
+
+
 </resources>

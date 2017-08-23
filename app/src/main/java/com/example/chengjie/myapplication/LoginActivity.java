@@ -45,7 +45,7 @@ public class LoginActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         //去掉Activity上面的状态栏
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
         init();
 
         btGo.setOnClickListener(new View.OnClickListener() {
@@ -115,7 +115,7 @@ public class LoginActivity extends Activity {
                         + "&opInfo.type=Login" + "&opInfo.note=" + note;
                 String res = HttpRequest.request(url, content);
                 System.out.println(res);
-                if (res==null||res.equals("SocketTimeoutException")) {
+                if (res == null || res.equals("SocketTimeoutException")) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -140,22 +140,25 @@ public class LoginActivity extends Activity {
                         url = "http://49.140.61.67:8080/Server/getUserName";
                         res = HttpRequest.request(url, "");
                         TeaInfoJSON teaInfoJSON = gson.fromJson(res, TeaInfoJSON.class);
-                        final int i=teaInfoJSON.getCode();
-                        if(i==0){
-                            ErrorCode.extra=teaInfoJSON.getResArr();
-                            ErrorCode.activity=LoginActivity.this;
-                            SharedPreferences.Editor editor=getSharedPreferences("userData",MODE_PRIVATE).edit();
-                            editor.putString("userName",infoJSON.getUserInfo().getName());
-                            editor.putString("phone",infoJSON.getUserInfo().getPhone());
+                        final int i = teaInfoJSON.getCode();
+                        if (i == 0) {
+                            ErrorCode.teaPicName = teaInfoJSON.getResArr();
+                            ErrorCode.longDescription=teaInfoJSON.getLongDescription();
+                            ErrorCode.shortDescription=teaInfoJSON.getShortDescription();
+                            ErrorCode.name=teaInfoJSON.getName();
+                            ErrorCode.activity = LoginActivity.this;
+                            SharedPreferences.Editor editor = getSharedPreferences("userData", MODE_PRIVATE).edit();
+                            editor.putString("userName", infoJSON.getUserInfo().getName());
+                            editor.putString("phone", infoJSON.getUserInfo().getPhone());
                             editor.apply();
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    ErrorCode.showErrorInfo(LoginActivity.this,btGo,ErrorCode.LOGIN_SUCCESS,null);
+                                    ErrorCode.showErrorInfo(LoginActivity.this, btGo, ErrorCode.LOGIN_SUCCESS, null);
                                 }
                             });
 
-                        }else
+                        } else
                             showErrorInfo(i);
                     }
 
@@ -191,16 +194,13 @@ public class LoginActivity extends Activity {
             }
         });
     }
+
     @Override
     public void onBackPressed() {
-        //方式一：将此任务转向后台
-        moveTaskToBack(false);
-
-        //方式二：返回手机的主屏幕
-    /*Intent intent = new Intent(Intent.ACTION_MAIN);
-    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    intent.addCategory(Intent.CATEGORY_HOME);
-    startActivity(intent);*/
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        startActivity(intent);
     }
 
 }

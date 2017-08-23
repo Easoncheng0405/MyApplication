@@ -43,7 +43,9 @@ public class MainActivity extends EuclidActivity  {
 
         PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.drawer_item_home).withIcon(R.drawable.ic_account_circle_black_48dp);
         PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withName(R.string.drawer_item_settings).withIcon(R.drawable.ic_build_black_48dp);
-        PrimaryDrawerItem item3=new PrimaryDrawerItem().withIdentifier(3).withName(R.string.logout).withIcon(R.drawable.ic_power_settings_new_black_48dp);
+        PrimaryDrawerItem item4=new PrimaryDrawerItem().withIdentifier(3).withName(R.string.logout).withIcon(R.drawable.ic_power_settings_new_black_48dp);
+        PrimaryDrawerItem item3=new PrimaryDrawerItem().withIdentifier(4).withName(R.string.community).withIcon(R.drawable.ic_people_black_48dp);
+        PrimaryDrawerItem item5=new PrimaryDrawerItem().withIdentifier(5).withName(R.string.feedback).withIcon(R.drawable.ic_feedback_black_48dp);
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.header)
@@ -52,11 +54,11 @@ public class MainActivity extends EuclidActivity  {
         drawer=new DrawerBuilder()
                 .withActivity(this)
                 .withAccountHeader(headerResult)
-                .addDrawerItems(item1, item2,item3)
+                .addDrawerItems(item1, item2,item3,item4,item5)
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        if(position==3)
+                        if(position==4)
                             clear();
                         close();
                         return true;
@@ -79,6 +81,13 @@ public class MainActivity extends EuclidActivity  {
                     drawer.openDrawer();
             }
         });
+
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this,"搜索",Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
@@ -86,16 +95,15 @@ public class MainActivity extends EuclidActivity  {
         Map<String, Object> profileMap;
         List<Map<String, Object>> profilesList = new ArrayList<>();
         ArrayList<String> res=getIntent().getStringArrayListExtra("res");
-        String[] list=new String[res.size()];
-        String[] names = getResources().getStringArray(R.array.array_names);
-
-        for (int i = 0; i < list.length; i++) {
+        ArrayList<String> l=getIntent().getStringArrayListExtra("long");
+        ArrayList<String> s=getIntent().getStringArrayListExtra("short");
+        ArrayList<String> name=getIntent().getStringArrayListExtra("name");
+        for (int i = 0; i < res.size(); i++) {
             profileMap = new HashMap<>();
-            list[i]="http://49.140.61.67:8080/Server/pic/"+res.get(i);
-            profileMap.put(EuclidListAdapter.KEY_AVATAR, list[i]);
-            profileMap.put(EuclidListAdapter.KEY_NAME, names[i]);
-            profileMap.put(EuclidListAdapter.KEY_DESCRIPTION_SHORT, getString(R.string.lorem_ipsum_short));
-            profileMap.put(EuclidListAdapter.KEY_DESCRIPTION_FULL, getString(R.string.lorem_ipsum_long));
+            profileMap.put(EuclidListAdapter.KEY_AVATAR, "http://49.140.61.67:8080/Server/pic/"+res.get(i));
+            profileMap.put(EuclidListAdapter.KEY_NAME, name.get(i));
+            profileMap.put(EuclidListAdapter.KEY_DESCRIPTION_SHORT, s.get(i));
+            profileMap.put(EuclidListAdapter.KEY_DESCRIPTION_FULL, l.get(i));
             profilesList.add(profileMap);
         }
 

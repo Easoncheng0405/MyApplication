@@ -73,6 +73,9 @@ public class SplashActivity extends Activity {
                         if (i == 0) {
                             Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                             intent.putStringArrayListExtra("res", teaInfoJSON.getResArr());
+                            intent.putExtra("long",teaInfoJSON.getLongDescription());
+                            intent.putExtra("short",teaInfoJSON.getShortDescription());
+                            intent.putExtra("name",teaInfoJSON.getName());
                             long costTime = System.currentTimeMillis() - start;
                             if (sleepTime - costTime > 0) {
                                 try {

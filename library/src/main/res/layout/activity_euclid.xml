@@ -16,6 +16,13 @@
             android:layout_height="match_parent"
             android:padding="15dp"
             android:src="@drawable/fluidicon" />
+        <ImageView
+            android:id="@+id/search"
+            android:layout_width="@dimen/height_toolbar"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:padding="15dp"
+            android:src="@drawable/ic_search_black_48dp" />
         <TextView
             android:text="@string/title_following"
             android:textColor="@color/black"
@@ -54,6 +61,7 @@
             android:background="@drawable/bg_black_oval">
 
             <TextView
+                android:id="@+id/bio"
                 android:text="@string/toolbar_bio"
                 android:textColor="@color/black"
                 android:layout_margin="2dp"
@@ -61,6 +69,7 @@
                 style="@style/TextViewProfileToolbarTitle" />
 
             <TextView
+                android:id="@+id/dea"
                 android:text="@string/toolbar_details"
                 android:textColor="@color/white"
                 android:layout_alignParentRight="true"
@@ -79,7 +88,6 @@
         android:background="@color/white"
         android:visibility="invisible"
         android:clickable="true">
-
         <TextView
             android:id="@+id/text_view_profile_name"
             android:layout_width="wrap_content"
@@ -107,7 +115,6 @@
                 android:textSize="18sp" />
 
         </ScrollView>
-
     </LinearLayout>
 
     <include
@@ -119,5 +126,4 @@
         android:visibility="invisible"
         android:layout_marginTop="@dimen/margin_top_button_message"
         android:id="@+id/button_profile" />
-
 </RelativeLayout>

@@ -18,8 +18,11 @@ import java.util.ArrayList;
 
 public class ErrorCode {
 
-    public static ArrayList<String> extra=null;
-    public static Activity activity=null;
+    public static ArrayList<String> teaPicName = null;
+    public static ArrayList<String> shortDescription=null;
+    public static ArrayList<String> longDescription=null;
+    public static ArrayList<String> name=null;
+    public static Activity activity = null;
     private static ValueAnimator widthAnimation;
     public static final String LOGIN_SUCCESS = "LOGIN_SUCCESS";
     public static final String LOGIN_FAILED = "LOGIN_FAILED";
@@ -43,8 +46,11 @@ public class ErrorCode {
 
         switch (code) {
             case LOGIN_SUCCESS:
-                final Intent intent=new Intent(context,MainActivity.class);
-                intent.putExtra("res",extra);
+                final Intent intent = new Intent(context, MainActivity.class);
+                intent.putExtra("res", teaPicName);
+                intent.putExtra("long",longDescription);
+                intent.putExtra("short",shortDescription);
+                intent.putExtra("name",name);
                 widthAnimation = ValueAnimator.ofInt(1, 200);
                 widthAnimation.setDuration(2000);
                 widthAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -88,8 +94,11 @@ public class ErrorCode {
                 Toast.makeText(context, info, Toast.LENGTH_SHORT).show();
                 break;
             case REGISTER_SUCCESS:
-                final Intent i=new Intent(context,MainActivity.class);
-                i.putExtra("res",extra);
+                final Intent i = new Intent(context, MainActivity.class);
+                i.putExtra("res", teaPicName);
+                i.putExtra("long",longDescription);
+                i.putExtra("short",shortDescription);
+                i.putExtra("name",name);
                 widthAnimation = ValueAnimator.ofInt(1, 200);
                 widthAnimation.setDuration(2000);
                 widthAnimation.setInterpolator(new AccelerateDecelerateInterpolator());

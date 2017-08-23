@@ -153,7 +153,10 @@ public class RegisterActivity extends Activity {
                                 TeaInfoJSON teaInfoJSON = gson.fromJson(res, TeaInfoJSON.class);
                                 final int n=teaInfoJSON.getCode();
                                 if(n==0){
-                                    ErrorCode.extra=teaInfoJSON.getResArr();
+                                    ErrorCode.teaPicName =teaInfoJSON.getResArr();
+                                    ErrorCode.longDescription=teaInfoJSON.getLongDescription();
+                                    ErrorCode.shortDescription=teaInfoJSON.getShortDescription();
+                                    ErrorCode.name=teaInfoJSON.getName();
                                     ErrorCode.activity=RegisterActivity.this;
                                     SharedPreferences.Editor editor=getSharedPreferences("userData",MODE_PRIVATE).edit();
                                     editor.putString("userName",infoJSON.getUserInfo().getName());

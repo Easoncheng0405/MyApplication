@@ -5,6 +5,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.RectF;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
@@ -19,6 +20,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -59,7 +61,7 @@ public abstract class EuclidActivity extends Activity {
     protected TextView mTextViewProfileName;
     protected TextView mTextViewProfileDescription;
     protected View mButtonProfile;
-    protected View back;
+    protected View back,search;
     public static ShapeDrawable sOverlayShape;
     static int sScreenWidth;
     static int sProfileImageHeight;
@@ -69,7 +71,7 @@ public abstract class EuclidActivity extends Activity {
 
     private View mOverlayListItemView;
     private EuclidState mState = EuclidState.Closed;
-
+    private TextView bio,dea;
     private float mInitialProfileButtonX;
 
     private AnimatorSet mOpenProfileAnimatorSet;
@@ -81,7 +83,8 @@ public abstract class EuclidActivity extends Activity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_euclid);
-
+        bio=(TextView)findViewById(R.id.bio);
+        dea=(TextView)findViewById(R.id.dea);
         mWrapper = (RelativeLayout) findViewById(R.id.wrapper);
         mListView = (ListView) findViewById(R.id.list_view);
         mToolbar = (FrameLayout) findViewById(R.id.toolbar_list);
@@ -97,6 +100,26 @@ public abstract class EuclidActivity extends Activity {
             }
         });
         back = findViewById(R.id.toolbar_profile_back);
+        search=findViewById(R.id.search);
+
+
+        bio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bio.setBackgroundResource(R.drawable.bg_orange_oval);
+                dea.setBackground(null);
+                dea.setTextColor(Color.WHITE);
+            }
+        });
+
+        dea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dea.setBackgroundResource(R.drawable.bg_orange_oval);
+                bio.setBackground(null);
+                bio.setTextColor(Color.WHITE);
+            }
+        });
 
         sScreenWidth = getResources().getDisplayMetrics().widthPixels;
         sProfileImageHeight = getResources().getDimensionPixelSize(R.dimen.height_profile_image);
@@ -382,6 +405,9 @@ public abstract class EuclidActivity extends Activity {
     private void animateCloseProfileDetails() {
         mState = EuclidState.Closing;
         getCloseProfileAnimatorSet().start();
+        bio.setBackgroundResource(R.drawable.bg_orange_oval);
+        dea.setBackground(null);
+        dea.setTextColor(Color.WHITE);
     }
 
     /**
