@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ui.activity.MainActivity;
+
 /**
  * Created by chengjie on 17-8-20.
  */
@@ -69,7 +71,7 @@ public class TeaInfoActivity extends EuclidActivity  {
         mButtonProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(TeaInfoActivity.this, "Oh hi!", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(TeaInfoActivity.this, MainActivity.class));
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
