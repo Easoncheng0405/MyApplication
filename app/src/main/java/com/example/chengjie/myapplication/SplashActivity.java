@@ -3,8 +3,6 @@ package com.example.chengjie.myapplication;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.provider.Settings;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -71,7 +69,7 @@ public class SplashActivity extends Activity {
                         TeaInfoJSON teaInfoJSON = gson.fromJson(res, TeaInfoJSON.class);
                         final int i = teaInfoJSON.getCode();
                         if (i == 0) {
-                            Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                            Intent intent = new Intent(SplashActivity.this, TeaInfoActivity.class);
                             intent.putStringArrayListExtra("res", teaInfoJSON.getResArr());
                             intent.putExtra("long",teaInfoJSON.getLongDescription());
                             intent.putExtra("short",teaInfoJSON.getShortDescription());

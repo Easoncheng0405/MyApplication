@@ -8,7 +8,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Toast;
 
 import com.dd.CircularProgressButton;
-import com.example.chengjie.myapplication.MainActivity;
+import com.example.chengjie.myapplication.TeaInfoActivity;
 
 import java.util.ArrayList;
 
@@ -46,7 +46,7 @@ public class ErrorCode {
 
         switch (code) {
             case LOGIN_SUCCESS:
-                final Intent intent = new Intent(context, MainActivity.class);
+                final Intent intent = new Intent(context, TeaInfoActivity.class);
                 intent.putExtra("res", teaPicName);
                 intent.putExtra("long",longDescription);
                 intent.putExtra("short",shortDescription);
@@ -94,7 +94,7 @@ public class ErrorCode {
                 Toast.makeText(context, info, Toast.LENGTH_SHORT).show();
                 break;
             case REGISTER_SUCCESS:
-                final Intent i = new Intent(context, MainActivity.class);
+                final Intent i = new Intent(context, TeaInfoActivity.class);
                 i.putExtra("res", teaPicName);
                 i.putExtra("long",longDescription);
                 i.putExtra("short",shortDescription);

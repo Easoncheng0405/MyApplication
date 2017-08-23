@@ -26,7 +26,7 @@ import java.util.Map;
  * Created by chengjie on 17-8-20.
  */
 
-public class MainActivity extends EuclidActivity  {
+public class TeaInfoActivity extends EuclidActivity  {
 
     private Drawer drawer;
 
@@ -69,7 +69,7 @@ public class MainActivity extends EuclidActivity  {
         mButtonProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Oh hi!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(TeaInfoActivity.this, "Oh hi!", Toast.LENGTH_SHORT).show();
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
@@ -85,7 +85,7 @@ public class MainActivity extends EuclidActivity  {
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this,"搜索",Toast.LENGTH_LONG).show();
+                Toast.makeText(TeaInfoActivity.this,"搜索",Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -118,7 +118,7 @@ public class MainActivity extends EuclidActivity  {
         SharedPreferences.Editor editor=getSharedPreferences("userData",MODE_PRIVATE).edit();
         editor.clear();
         editor.apply();
-        startActivity(new Intent(MainActivity.this,LoginActivity.class));
+        startActivity(new Intent(TeaInfoActivity.this,LoginActivity.class));
         finish();
     }
 }
