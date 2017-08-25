@@ -1,8 +1,10 @@
 package com.example.chengjie.myapplication;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -11,6 +13,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import base.MyDataBase;
 import base.TeaInfoJSON;
 import util.ErrorCode;
 import util.HttpRequest;
@@ -40,12 +43,17 @@ public class SplashActivity extends Activity {
                 SharedPreferences preferences = getSharedPreferences("userData", MODE_PRIVATE);
                 String name = preferences.getString("userName", "");
                 String phone = preferences.getString("phone", "");
+                SharedPreferences sharedPreferences = getSharedPreferences("db", MODE_PRIVATE);
+                final int version=(sharedPreferences.getInt("version",0)+1);
+                System.out.println(version+"******");
+                SharedPreferences.Editor editor=sharedPreferences.edit();
+                editor.putInt("version",version);
+                editor.apply();
                 if (name.equals("") || phone.equals(""))
                     startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                 else {
                     String url = "http://49.140.61.67:8080/Server/getUserName";
                     final String res = HttpRequest.request(url, "");
-                    System.out.println(res);
                     if (res.equals("SocketTimeoutException")) {
                         startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                         finish();
@@ -67,13 +75,21 @@ public class SplashActivity extends Activity {
                     } else {
                         Gson gson = new Gson();
                         TeaInfoJSON teaInfoJSON = gson.fromJson(res, TeaInfoJSON.class);
+                        SQLiteDatabase sqLiteDatabase=new MyDataBase(SplashActivity.this,"TeaInfo.db",null,version).getWritableDatabase();
+                        ContentValues contentValues=new ContentValues();
+                        int length=teaInfoJSON.getName().size();
+                        for(int m=0;m<length;m++){
+                            contentValues.put("name",teaInfoJSON.getName().get(m));
+                            contentValues.put("phone",teaInfoJSON.getPhone().get(m));
+                            contentValues.put("ld",teaInfoJSON.getLongDescription().get(m));
+                            contentValues.put("sd",teaInfoJSON.getShortDescription().get(m));
+                            sqLiteDatabase.insert("tea",null,contentValues);
+                            contentValues.clear();
+                        }
+                        sqLiteDatabase.close();
                         final int i = teaInfoJSON.getCode();
                         if (i == 0) {
                             Intent intent = new Intent(SplashActivity.this, TeaInfoActivity.class);
-                            intent.putStringArrayListExtra("res", teaInfoJSON.getResArr());
-                            intent.putExtra("long",teaInfoJSON.getLongDescription());
-                            intent.putExtra("short",teaInfoJSON.getShortDescription());
-                            intent.putExtra("name",teaInfoJSON.getName());
                             long costTime = System.currentTimeMillis() - start;
                             if (sleepTime - costTime > 0) {
                                 try {

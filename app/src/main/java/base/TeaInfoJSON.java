@@ -9,10 +9,12 @@ import java.util.ArrayList;
 public class TeaInfoJSON {
     private int code;
     private String status;
-    private ArrayList<String> resArr;
+
+
+    private ArrayList<String> phone;
+    private ArrayList<String> name;
     private ArrayList<String> shortDescription;
     private ArrayList<String> longDescription;
-    private ArrayList<String> name;
     public int getCode() {
         return code;
     }
@@ -29,13 +31,6 @@ public class TeaInfoJSON {
         this.status = status;
     }
 
-    public ArrayList<String> getResArr() {
-        return resArr;
-    }
-
-    public void setResArr(ArrayList<String> resArr) {
-        this.resArr = resArr;
-    }
 
     public ArrayList<String> getShortDescription() {
         return shortDescription;
@@ -59,5 +54,13 @@ public class TeaInfoJSON {
 
     public void setName(ArrayList<String> name) {
         this.name = name;
+    }
+
+    public ArrayList<String> getPhone() {
+        return phone;
+    }
+
+    public void setPhone(ArrayList<String> phone) {
+        this.phone = phone;
     }
 }

@@ -3,7 +3,9 @@ package com.example.chengjie.myapplication;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -19,15 +21,20 @@ import android.widget.Toast;
 
 import com.dd.CircularProgressButton;
 import com.google.gson.Gson;
+import com.hyphenate.EMCallBack;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.exceptions.HyphenateException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import base.MyDataBase;
 import base.TeaInfoJSON;
 import base.UserInfoJSON;
 import util.ErrorCode;
@@ -100,6 +107,32 @@ public class RegisterActivity extends Activity {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                try {
+                    EMClient.getInstance().createAccount(phone, passWord);
+                    EMClient.getInstance().login(phone, passWord, new EMCallBack() {
+                        @Override
+                        public void onSuccess() {
+                            EMClient.getInstance().groupManager().loadAllGroups();
+                            EMClient.getInstance().chatManager().loadAllConversations();
+                        }
+
+                        @Override
+                        public void onProgress(int progress, String status) {
+                        }
+
+                        @Override
+                        public void onError(int code, String message) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ErrorCode.showErrorInfo(RegisterActivity.this, button, ErrorCode.LOGIN_FAILED, "登录环信服务器失败");
+                                }
+                            });
+                        }
+                    });
+                } catch (HyphenateException e) {
+                    ErrorCode.showErrorInfo(RegisterActivity.this, button, ErrorCode.REGISTER_TIMEOUT, "注册失败环信账号失败！");
+                }
                 String url = "http://49.140.61.67:8080/Server/CheckUserAlreadyExist";
                 String content = "phone=" + phone + "&name=" + name;
                 final String result = HttpRequest.request(url, content);
@@ -151,25 +184,41 @@ public class RegisterActivity extends Activity {
                                 url = "http://49.140.61.67:8080/Server/getUserName";
                                 res = HttpRequest.request(url, "");
                                 TeaInfoJSON teaInfoJSON = gson.fromJson(res, TeaInfoJSON.class);
-                                final int n=teaInfoJSON.getCode();
-                                if(n==0){
-                                    ErrorCode.teaPicName =teaInfoJSON.getResArr();
-                                    ErrorCode.longDescription=teaInfoJSON.getLongDescription();
-                                    ErrorCode.shortDescription=teaInfoJSON.getShortDescription();
-                                    ErrorCode.name=teaInfoJSON.getName();
-                                    ErrorCode.activity=RegisterActivity.this;
-                                    SharedPreferences.Editor editor=getSharedPreferences("userData",MODE_PRIVATE).edit();
-                                    editor.putString("userName",infoJSON.getUserInfo().getName());
-                                    editor.putString("phone",infoJSON.getUserInfo().getPhone());
-                                    editor.apply();
+                                final int n = teaInfoJSON.getCode();
+                                if (n == 0) {
+                                    ErrorCode.activity = RegisterActivity.this;
+                                    SharedPreferences.Editor editor1 = getSharedPreferences("userData", MODE_PRIVATE).edit();
+                                    editor1.putString("userName", infoJSON.getUserInfo().getName());
+                                    editor1.putString("phone", infoJSON.getUserInfo().getPhone());
+                                    editor1.putInt("dbVersion",1);
+                                    editor1.apply();
+                                    SharedPreferences preferences=getSharedPreferences("db", MODE_PRIVATE);
+                                    int version=preferences.getInt("version",0);
+                                    SharedPreferences.Editor editor2 = preferences.edit();
+                                    version=version+1;
+                                    editor2.putInt("version", version);
+                                    editor2.apply();
+
+                                    SQLiteDatabase sqLiteDatabase = new MyDataBase(RegisterActivity.this, "TeaInfo.db", null, version).getWritableDatabase();
+                                    ContentValues contentValues = new ContentValues();
+                                    int length = teaInfoJSON.getName().size();
+                                    for (int m = 0; m < length; m++) {
+                                        contentValues.put("name", teaInfoJSON.getName().get(m));
+                                        contentValues.put("phone", teaInfoJSON.getPhone().get(m));
+                                        contentValues.put("ld", teaInfoJSON.getLongDescription().get(m));
+                                        contentValues.put("sd", teaInfoJSON.getShortDescription().get(m));
+                                        sqLiteDatabase.insert("tea", null, contentValues);
+                                        contentValues.clear();
+                                    }
+                                    sqLiteDatabase.close();
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            ErrorCode.showErrorInfo(RegisterActivity.this,button,ErrorCode.LOGIN_SUCCESS,null);
+                                            ErrorCode.showErrorInfo(RegisterActivity.this, button, ErrorCode.LOGIN_SUCCESS, null);
                                         }
                                     });
 
-                                }else
+                                } else
                                     showErrorInfo(n);
                             } else
                                 showErrorInfo(i);

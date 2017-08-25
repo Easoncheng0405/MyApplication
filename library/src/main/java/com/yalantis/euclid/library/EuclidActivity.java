@@ -52,7 +52,7 @@ public abstract class EuclidActivity extends Activity {
     private static final int ANIMATION_DURATION_CLOSE_PROFILE_DETAILS = 500;
     private static final int ANIMATION_DURATION_SHOW_PROFILE_BUTTON = 300;
     private static final int CIRCLE_RADIUS_DP = 50;
-
+    protected String teaName;
     protected RelativeLayout mWrapper;
     protected ListView mListView;
     protected FrameLayout mToolbar;
@@ -61,7 +61,8 @@ public abstract class EuclidActivity extends Activity {
     protected TextView mTextViewProfileName;
     protected TextView mTextViewProfileDescription;
     protected View mButtonProfile;
-    protected View back,search;
+    protected ImageView back;
+    protected View search;
     public static ShapeDrawable sOverlayShape;
     static int sScreenWidth;
     static int sProfileImageHeight;
@@ -99,7 +100,7 @@ public abstract class EuclidActivity extends Activity {
                 mInitialProfileButtonX = mButtonProfile.getX();
             }
         });
-        back = findViewById(R.id.toolbar_profile_back);
+        back = (ImageView) findViewById(R.id.toolbar_profile_back);
         search=findViewById(R.id.search);
 
 
@@ -124,6 +125,7 @@ public abstract class EuclidActivity extends Activity {
         sScreenWidth = getResources().getDisplayMetrics().widthPixels;
         sProfileImageHeight = getResources().getDimensionPixelSize(R.dimen.height_profile_image);
         sOverlayShape = buildAvatarCircleOverlay();
+
 
         initList();
     }
@@ -188,6 +190,8 @@ public abstract class EuclidActivity extends Activity {
                 .placeholder(R.color.blue)
                 .into((ImageView) mOverlayListItemView.findViewById(R.id.image_view_avatar));
 
+        //这里是简介信息展示
+
         ((TextView) mOverlayListItemView.findViewById(R.id.text_view_name)).setText((String) item.get(EuclidListAdapter.KEY_NAME));
         ((TextView) mOverlayListItemView.findViewById(R.id.text_view_description)).setText((String) item.get(EuclidListAdapter.KEY_DESCRIPTION_SHORT));
         setProfileDetailsInfo(item);
@@ -205,6 +209,7 @@ public abstract class EuclidActivity extends Activity {
      * @param item - data from adapter, that will be set into overlay view.
      */
     private void setProfileDetailsInfo(Map<String, Object> item) {
+        this.teaName=(String)item.get(EuclidListAdapter.KEY_NAME);
         mTextViewProfileName.setText((String) item.get(EuclidListAdapter.KEY_NAME));
         mTextViewProfileDescription.setText((String) item.get(EuclidListAdapter.KEY_DESCRIPTION_FULL));
     }
