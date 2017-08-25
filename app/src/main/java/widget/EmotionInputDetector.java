@@ -31,11 +31,7 @@ import util.AudioRecoderUtils;
 import util.PopupWindowFactory;
 import util.Utils;
 
-/**
- * 作者：Rance on 2016/12/13 15:19
- * 邮箱：rance935@163.com
- * 输入框管理类
- */
+
 public class EmotionInputDetector {
 
     private static final String SHARE_PREFERENCE_NAME = "com.dss886.emotioninputdetector";

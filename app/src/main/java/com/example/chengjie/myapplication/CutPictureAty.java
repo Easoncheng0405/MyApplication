@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -26,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 
+import util.FileImageUpload;
 
 
 /**
@@ -272,10 +274,22 @@ public class CutPictureAty extends Activity implements OnTouchListener,
 
 		switch (v.getId()) {
 		case R.id.save:
+		    System.out.println("正在保存"+3);
 			getBitmap();
 			Intent intent = new Intent(CutPictureAty.this,TeaInfoActivity.class);
 			intent.putExtra("path", filename);
 			startActivityForResult(intent,3);
+            System.out.println("正在上传");
+            SharedPreferences preferences = getSharedPreferences("userData", MODE_PRIVATE);
+            final String name = preferences.getString("userName", "");
+            final File file = new File(filename);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    String url = "http://49.140.61.67:8080/Server/upLoadFile?filename=" + name;
+                    FileImageUpload.uploadFile(file, url);
+                }
+            }).start();
 			finish();
 			break;
 		case R.id.cancle:

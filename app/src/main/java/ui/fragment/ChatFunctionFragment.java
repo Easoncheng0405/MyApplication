@@ -58,10 +58,12 @@ public class ChatFunctionFragment extends BaseFragment {
         switch (view.getId()) {
             case R.id.chat_function_photograph:
                 if (ContextCompat.checkSelfPermission(getActivity(),
+                        Manifest.permission.CAMERA)
+                        != PackageManager.PERMISSION_GRANTED||ContextCompat.checkSelfPermission(getActivity(),
                         Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(getActivity(),
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA},
                             MY_PERMISSIONS_REQUEST_CALL_PHONE2);
 
                 } else {
@@ -74,7 +76,7 @@ public class ChatFunctionFragment extends BaseFragment {
                         != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(getActivity(),
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            MY_PERMISSIONS_REQUEST_CALL_PHONE2);
+                            MY_PERMISSIONS_REQUEST_CALL_PHONE);
 
                 } else {
                     choosePhoto();
@@ -182,7 +184,7 @@ public class ChatFunctionFragment extends BaseFragment {
         }
 
         if (requestCode == MY_PERMISSIONS_REQUEST_CALL_PHONE2) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED&&grantResults[1]==PackageManager.PERMISSION_GRANTED) {
                 choosePhoto();
             } else {
                 toastShow("请同意系统权限后继续");
