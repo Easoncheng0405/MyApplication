@@ -70,6 +70,11 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".TeaInfoActivity" />
         <activity android:name=".SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name="ui.activity.MainActivity"
@@ -83,12 +88,9 @@
             android:theme="@android:style/Theme.Translucent"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity android:name=".CutPictureAty" />
-        <activity android:name=".UpLoadInfo" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".UpLoadInfo"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 

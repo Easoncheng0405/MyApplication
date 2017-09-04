@@ -6,6 +6,30 @@
     xmlns:stv="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context="com.example.chengjie.myapplication.UpLoadInfo">
+    <android.support.v7.widget.Toolbar
+
+        android:id="@+id/activity_main_toolbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:minHeight="?attr/actionBarSize"
+        android:background="?attr/colorPrimary">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/back"
+                android:background="@drawable/ic_arrow_back_black_48dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+            <TextView
+                android:textSize="18dp"
+                android:text="编辑资料"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -123,8 +147,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 stv:sRightIconRes="@drawable/arrow_right_red"
-                stv:sRightLines="5"
-                stv:sRightMaxEms="50"/>
+                stv:sCenterLines="5"
+                stv:sCenterMaxEms="50"/>
 
             <TextView
                 android:layout_marginTop="20dp"
@@ -137,8 +161,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 stv:sRightIconRes="@drawable/arrow_right_red"
-                stv:sRightLines="5"
-                stv:sRightMaxEms="50"/>
+                stv:sCenterLines="5"
+                stv:sCenterMaxEms="50"/>
+
+            <TextView
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
+                android:text="其它"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <com.allen.library.SuperTextView
+                android:id="@+id/other"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                stv:sRightIconRes="@drawable/arrow_right_red"
+                stv:sCenterLines="5"
+                stv:sCenterMaxEms="50"/>
         </LinearLayout>
     </ScrollView>
 
