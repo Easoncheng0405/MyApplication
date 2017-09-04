@@ -41,7 +41,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:padding="10dp"
-            android:text="保存"
+            android:text="确定"
             android:textColor="#ffffff"
             android:textSize="15sp" />
     </LinearLayout>

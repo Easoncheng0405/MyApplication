@@ -3,99 +3,144 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:stv="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context="com.example.chengjie.myapplication.UpLoadInfo">
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <EditText
-                android:id="@+id/name"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingTop="20dp">
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:text="个人资料"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <com.allen.library.SuperTextView
+                android:id="@+id/nick_name"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="姓名" />
-
-            <EditText
-                android:id="@+id/sex"
+                android:layout_height="50dp"
+                stv:sLeftTextString="用  户  名"
+                stv:sLeftTextColor="@color/md_grey_700"
+                stv:sRightIconRes="@drawable/arrow_right_red" />
+            <com.allen.library.SuperTextView
+                android:id="@+id/true_name"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="性别" />
-
-            <EditText
+                android:layout_height="50dp"
+                stv:sLeftTextString="真实姓名"
+                stv:sLeftTextColor="@color/md_grey_700"
+                stv:sRightIconRes="@drawable/arrow_right_red" />
+            <com.allen.library.SuperTextView
                 android:id="@+id/phone"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="电话" />
-
-            <EditText
-                android:id="@+id/age"
+                android:layout_height="50dp"
+                stv:sLeftTextString="手机号码"
+                stv:sLeftTextColor="@color/md_grey_700"
+                stv:sRightIconRes="@drawable/arrow_right_red" />
+            <com.allen.library.SuperTextView
+                android:id="@+id/email"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="年龄" />
+                android:layout_height="50dp"
+                stv:sLeftTextString="邮        箱"
+                stv:sLeftTextColor="@color/md_grey_700"
+                stv:sRightIconRes="@drawable/arrow_right_red" />
+            <com.allen.library.SuperTextView
+                android:id="@+id/address"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                stv:sLeftTextString="住        址"
+                stv:sLeftTextColor="@color/md_grey_700"
+                stv:sRightIconRes="@drawable/arrow_right_red" />
 
-            <EditText
+            <TextView
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
+                android:text="教育信息"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <com.allen.library.SuperTextView
                 android:id="@+id/colloge"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="大学" />
-
-            <EditText
-                android:id="@+id/grade"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="年级" />
-
-            <EditText
+                android:layout_height="50dp"
+                stv:sLeftTextString="所在大学"
+                stv:sLeftTextColor="@color/md_grey_700"
+                stv:sRightIconRes="@drawable/arrow_right_red" />
+            <com.allen.library.SuperTextView
                 android:id="@+id/major"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="专业" />
+                android:layout_height="50dp"
+                stv:sLeftTextString="就读专业"
+                stv:sLeftTextColor="@color/md_grey_700"
+                stv:sRightIconRes="@drawable/arrow_right_red" />
+            <com.allen.library.SuperTextView
+                android:id="@+id/time"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                stv:sLeftTextString="入学时间"
+                stv:sLeftTextColor="@color/md_grey_700"
+                stv:sRightIconRes="@drawable/arrow_right_red" />
 
-            <EditText
+            <TextView
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
+                android:text="岗位要求"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <com.allen.library.SuperTextView
                 android:id="@+id/subjects"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="科目" />
-
-            <EditText
+                android:layout_height="50dp"
+                stv:sLeftTextString="选择科目"
+                stv:sLeftTextColor="@color/md_grey_700"
+                stv:sRightIconRes="@drawable/arrow_right_red" />
+            <com.allen.library.SuperTextView
                 android:id="@+id/salary"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="薪水" />
-
-            <EditText
-                android:id="@+id/skills"
+                android:layout_height="50dp"
+                stv:sLeftTextString="预期薪水"
+                stv:sLeftTextColor="@color/md_grey_700"
+                stv:sRightIconRes="@drawable/arrow_right_red" />
+            <com.allen.library.SuperTextView
+                android:id="@+id/freetime"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="特长" />
+                android:layout_height="50dp"
+                stv:sLeftTextString="空闲时间"
+                stv:sLeftTextColor="@color/md_grey_700"
+                stv:sRightIconRes="@drawable/arrow_right_red" />
 
-            <EditText
+            <TextView
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
+                android:text="家教经验"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <com.allen.library.SuperTextView
                 android:id="@+id/exp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="教学经验" />
+                android:layout_height="100dp"
+                stv:sRightIconRes="@drawable/arrow_right_red"
+                stv:sRightLines="5"
+                stv:sRightMaxEms="50"/>
 
-            <EditText
-                android:id="@+id/judge"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="评价" />
-
-            <EditText
-                android:id="@+id/other"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="其他" />
-            <Button
-                android:id="@+id/ok"
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
+                android:text="个人特长"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+            <com.allen.library.SuperTextView
+                android:id="@+id/skills"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                stv:sRightIconRes="@drawable/arrow_right_red"
+                stv:sRightLines="5"
+                stv:sRightMaxEms="50"/>
         </LinearLayout>
-
     </ScrollView>
+
 
 </LinearLayout>

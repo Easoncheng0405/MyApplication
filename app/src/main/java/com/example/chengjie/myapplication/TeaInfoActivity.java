@@ -7,8 +7,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,6 +17,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.hyphenate.chat.EMClient;
@@ -30,6 +29,7 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
+import com.squareup.picasso.Picasso;
 import com.yalantis.euclid.library.EuclidActivity;
 import com.yalantis.euclid.library.EuclidListAdapter;
 
@@ -51,9 +51,11 @@ import util.SelectDialog;
 public class TeaInfoActivity extends EuclidActivity {
 
     private Drawer drawer;
-
+    public static ProfileDrawerItem profile;
+    public static AccountHeader headerResult;
     private Context context;
     public static final String TMP_PATH = "temp.jpg";
+    private String name,phone;
     private final int CAMERA_WITH_DATA = 1;
     /**
      * 本地图片选取标志
@@ -69,19 +71,21 @@ public class TeaInfoActivity extends EuclidActivity {
         super.onCreate(savedInstanceState);
         context = TeaInfoActivity.this;
         SharedPreferences preferences = getSharedPreferences("userData", MODE_PRIVATE);
-        String name = preferences.getString("userName", "");
-        String phone = preferences.getString("phone", "");
-        ProfileDrawerItem profile = new ProfileDrawerItem()
+        name = preferences.getString("userName", "");
+        phone = preferences.getString("phone", "");
+        Picasso.with(this).load("http://49.140.61.67:8080/images/" + phone + ".jpg").into(back);
+
+        profile = new ProfileDrawerItem()
                 .withName(name)
                 .withEmail(phone)
                 .withIcon(R.drawable.fluidicon);
-
         PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.drawer_item_home).withIcon(R.drawable.ic_account_circle_black_48dp);
-        PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withName(R.string.drawer_item_settings).withIcon(R.drawable.ic_build_black_48dp);
-        PrimaryDrawerItem item4 = new PrimaryDrawerItem().withIdentifier(3).withName(R.string.logout).withIcon(R.drawable.ic_power_settings_new_black_48dp);
-        PrimaryDrawerItem item3 = new PrimaryDrawerItem().withIdentifier(4).withName(R.string.community).withIcon(R.drawable.ic_people_black_48dp);
+        PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withName(R.string.drawer_item_settings).withIcon(R.drawable.ic_settings_black_48dp);
+        PrimaryDrawerItem item4 = new PrimaryDrawerItem().withIdentifier(2).withName(R.string.logout).withIcon(R.drawable.ic_power_settings_new_black_48dp);
+        PrimaryDrawerItem item3 = new PrimaryDrawerItem().withIdentifier(3).withName(R.string.community).withIcon(R.drawable.ic_people_black_48dp);
         PrimaryDrawerItem item5 = new PrimaryDrawerItem().withIdentifier(5).withName(R.string.feedback).withIcon(R.drawable.ic_feedback_black_48dp);
-        AccountHeader headerResult = new AccountHeaderBuilder()
+
+        headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.header)
                 .addProfiles(profile)
@@ -103,7 +107,7 @@ public class TeaInfoActivity extends EuclidActivity {
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                         if (position == 1)
                             startActivity(new Intent(TeaInfoActivity.this, UpLoadInfo.class));
-                        if (position == 4)
+                        if (position == 3)
                             clear();
                         close();
                         return true;
@@ -229,41 +233,42 @@ public class TeaInfoActivity extends EuclidActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == FLAG_CHOOSE_IMG && resultCode == RESULT_OK) {
-            if (data != null) {
-                Uri uri = data.getData();
-                if (!TextUtils.isEmpty(uri.getAuthority())) {
-                    Cursor cursor = getContentResolver().query(uri,
-                            new String[]{MediaStore.Images.Media.DATA},
-                            null, null, null);
-                    if (null == cursor) {
-                        Toast.makeText(getApplicationContext(), "图片没找到", Toast.LENGTH_LONG).show();
-                        return;
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case 1:
+                    startCropImageActivity(Environment.getExternalStorageDirectory() + "/" + TMP_PATH);
+                    finish();
+                    break;
+                case 2:
+                    if (data != null) {
+                        Uri uri = data.getData();
+                        if (!TextUtils.isEmpty(uri.getAuthority())) {
+                            Cursor cursor = getContentResolver().query(uri,
+                                    new String[]{MediaStore.Images.Media.DATA},
+                                    null, null, null);
+                            if (null == cursor) {
+                                Toast.makeText(getApplicationContext(), "图片没找到", Toast.LENGTH_LONG).show();
+                                return;
+                            }
+                            cursor.moveToFirst();
+                            String path = cursor.getString(cursor
+                                    .getColumnIndex(MediaStore.Images.Media.DATA));
+                            cursor.close();
+                            Intent intent = new Intent(this, CutPictureAty.class);
+                            intent.putExtra("path", path);
+                            startActivityForResult(intent, 3);
+                            finish();
+                        } else {
+                            Intent intent = new Intent(this, CutPictureAty.class);
+                            intent.putExtra("path", uri.getPath());
+                            startActivityForResult(intent, 3);
+                            finish();
+                        }
                     }
-                    cursor.moveToFirst();
-                    String path = cursor.getString(cursor
-                            .getColumnIndex(MediaStore.Images.Media.DATA));
-                    cursor.close();
+                    break;
 
-                    Intent intent = new Intent(this, CutPictureAty.class);
-                    intent.putExtra("path", path);
-                    startActivityForResult(intent, FLAG_MODIFY_FINISH);
-                } else {
-                    Intent intent = new Intent(this, CutPictureAty.class);
-                    intent.putExtra("path", uri.getPath());
-                    startActivityForResult(intent, FLAG_MODIFY_FINISH);
-                }
-            }
-        } else if (requestCode == FLAG_MODIFY_FINISH && resultCode == RESULT_OK) {
-            if (data != null) {
-                final String path = data.getStringExtra("path");
-                Bitmap b = BitmapFactory.decodeFile(path);
-                back.setImageBitmap(b);
             }
         }
-        if (requestCode == CAMERA_WITH_DATA)
-            startCropImageActivity(Environment.getExternalStorageDirectory() + "/" + TMP_PATH);
-
 
 
     }

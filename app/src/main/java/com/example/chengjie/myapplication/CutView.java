@@ -8,6 +8,8 @@ import android.graphics.Paint.Style;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.yalantis.euclid.library.EuclidActivity;
+
 /**
  * 自定义 裁剪框
  */

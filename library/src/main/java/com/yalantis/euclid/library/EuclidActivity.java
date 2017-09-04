@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
 
@@ -44,7 +45,7 @@ import io.codetail.animation.ViewAnimationUtils;
  * Created by Oleksii Shliama on 1/27/15.
  */
 public abstract class EuclidActivity extends Activity {
-
+    public static int HIGHT,WIDTH;
     private static final int REVEAL_ANIMATION_DURATION = 1000;
     private static final int MAX_DELAY_SHOW_DETAILS_ANIMATION = 500;
     private static final int ANIMATION_DURATION_SHOW_PROFILE_DETAILS = 500;
@@ -61,12 +62,12 @@ public abstract class EuclidActivity extends Activity {
     protected TextView mTextViewProfileName;
     protected TextView mTextViewProfileDescription;
     protected View mButtonProfile;
-    protected ImageView back;
+    public static CircleImageView back;
     protected View search;
     public static ShapeDrawable sOverlayShape;
     static int sScreenWidth;
     static int sProfileImageHeight;
-
+    private ImageView imageView;
     private SwingLeftInAnimationAdapter mListViewAnimationAdapter;
     private ViewAnimator mListViewAnimator;
 
@@ -100,7 +101,7 @@ public abstract class EuclidActivity extends Activity {
                 mInitialProfileButtonX = mButtonProfile.getX();
             }
         });
-        back = (ImageView) findViewById(R.id.toolbar_profile_back);
+        back = (CircleImageView) findViewById(R.id.toolbar_profile_back);
         search=findViewById(R.id.search);
 
 
@@ -128,6 +129,7 @@ public abstract class EuclidActivity extends Activity {
 
 
         initList();
+
     }
 
     private void initList() {
@@ -189,6 +191,9 @@ public abstract class EuclidActivity extends Activity {
                 .resize(sScreenWidth, sProfileImageHeight).centerCrop()
                 .placeholder(R.color.blue)
                 .into((ImageView) mOverlayListItemView.findViewById(R.id.image_view_avatar));
+        imageView=(ImageView)findViewById(R.id.image_view_avatar) ;
+        WIDTH=imageView.getWidth();
+        HIGHT=imageView.getHeight();
 
         //这里是简介信息展示
 
