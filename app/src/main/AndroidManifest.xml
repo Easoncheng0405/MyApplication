@@ -69,13 +69,7 @@
             android:theme="@style/Translucent" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".TeaInfoActivity" />
-        <activity android:name=".SplashActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".SplashActivity" />
         <activity
             android:name="ui.activity.MainActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
@@ -88,10 +82,20 @@
             android:theme="@android:style/Theme.Translucent"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity android:name=".CutPictureAty" />
-        <activity android:name=".UpLoadInfo"
+        <activity
+            android:name=".UpLoadInfo"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
+        <activity
+            android:name=".InputExp"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".InputSkills"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>

@@ -70,6 +70,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 stv:sLeftTextString="邮        箱"
+                stv:sRightMaxEms="20"
                 stv:sLeftTextColor="@color/md_grey_700"
                 stv:sRightIconRes="@drawable/arrow_right_red" />
             <com.allen.library.SuperTextView
