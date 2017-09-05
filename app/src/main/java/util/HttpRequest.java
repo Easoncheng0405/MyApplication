@@ -35,7 +35,7 @@ public class HttpRequest {
             connection.setRequestMethod("POST");
             connection.setUseCaches(false);
             connection.setInstanceFollowRedirects(true);
-            connection.setConnectTimeout(5000);
+            connection.setConnectTimeout(3000);
             connection.connect();
             DataOutputStream out = new DataOutputStream(connection.getOutputStream());
             out.writeBytes(content);

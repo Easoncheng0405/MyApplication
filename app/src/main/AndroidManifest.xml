@@ -94,8 +94,13 @@
         <activity
             android:name=".InputExp"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".InputSkills"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+        <activity
+            android:name=".InputSkills"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".InputOther"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+        </activity>
     </application>
 
 </manifest>

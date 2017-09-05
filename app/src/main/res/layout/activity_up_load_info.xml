@@ -28,6 +28,16 @@
                 android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/ok"
+                android:paddingRight="10dp"
+                android:paddingTop="2dp"
+                android:text="完成"
+                android:textSize="18dp"
+                android:layout_alignParentRight="true"
+                android:textColor="@color/orange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>
     <ScrollView
@@ -88,7 +98,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <com.allen.library.SuperTextView
-                android:id="@+id/colloge"
+                android:id="@+id/college"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 stv:sLeftTextString="所在大学"
@@ -120,6 +130,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 stv:sLeftTextString="选择科目"
+                stv:sRightMaxEms="25"
                 stv:sLeftTextColor="@color/md_grey_700"
                 stv:sRightIconRes="@drawable/arrow_right_red" />
             <com.allen.library.SuperTextView

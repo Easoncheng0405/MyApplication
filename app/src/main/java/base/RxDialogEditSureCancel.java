@@ -92,4 +92,5 @@ public class RxDialogEditSureCancel extends RxDialog {
         super(context, alpha, gravity);
         initView();
     }
+
 }
