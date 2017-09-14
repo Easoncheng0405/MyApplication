@@ -64,7 +64,10 @@ public class UpLoadInfo extends AppCompatActivity implements View.OnClickListene
         majorView.setRightString(major);
         timeView.setRightString(time);
         trueNameView.setRightString(trueName);
-        subjectsView.setRightString(getShowRes(subjects));
+        if(!subjects.equals("未选择"))
+            subjectsView.setRightString(getShowRes(subjects));
+        else
+            subjectsView.setRightString(subjects);
         salaryView.setRightString(salary);
         freeTimeView.setRightString(freetime);
         expView.setCenterString(exp);
@@ -434,39 +437,6 @@ public class UpLoadInfo extends AppCompatActivity implements View.OnClickListene
             finish();
     }
 
-    private void upLoadInfo(){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String phone = preferences.getString("phone", "null");
-                String name = preferences.getString("userName", "null");
-                String email = preferences.getString("email", "null");
-                String address = preferences.getString("address", "null");//
-                String college = preferences.getString("college", "null");//
-                String major = preferences.getString("major", "null");//
-                String time = preferences.getString("time", "null");
-                String trueName = preferences.getString("trueName", "null");//
-                String subjects = preferences.getString("subjects", "null");
-                String salary = preferences.getString("salary", "null");//
-                String freetime = preferences.getString("freeTime", "null");//
-                String exp = preferences.getString("exp", "null");//
-                String sklills = preferences.getString("skills", "null");//
-                String other = preferences.getString("other", "null");//
-                try {
-                    address= URLEncoder.encode(address,"UTF-8");
-                    college= URLEncoder.encode(college,"UTF-8");
-                    major= URLEncoder.encode(major,"UTF-8");
-                    sklills= URLEncoder.encode(sklills,"UTF-8");
-                    trueName= URLEncoder.encode(trueName,"UTF-8");
-                    other= URLEncoder.encode(other,"UTF-8");
-                    salary= URLEncoder.encode(salary,"UTF-8");
-                    freetime= URLEncoder.encode(freetime,"UTF-8");
-                    exp= URLEncoder.encode(exp,"UTF-8");
-
-                } catch (UnsupportedEncodingException e) {
-
-                }
-            }
-        }).start();
+    private void upLoadInfo() {
     }
 }
